@@ -1,10 +1,10 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom';
 import { 
   Home, Users, AlertCircle, Bell, BarChart3, Settings 
-} from 'lucide-react'
+} from 'lucide-react';
 
 const Sidebar = () => {
-  const location = useLocation()
+  const location = useLocation();
   
   const navigation = [
     { name: 'Dashboard', href: '/', icon: Home },
@@ -13,8 +13,11 @@ const Sidebar = () => {
     { name: 'Métricas', href: '/metricas', icon: BarChart3 },
     { name: 'Notificaciones', href: '/notificaciones', icon: Bell },
     { name: 'Configuración', href: '/configuracion', icon: Settings },
-  ]
+    // Agregar la nueva opción CORRECTAMENTE:
+    { name: 'Gestión de Reclamos', href: '/gestion-reclamos', icon: AlertCircle }
+  ];
 
+  // El resto del código se mantiene igual...
   return (
     <div className="hidden md:flex md:w-64 md:flex-col">
       <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-white border-r">
@@ -24,7 +27,7 @@ const Sidebar = () => {
         <div className="mt-8 flex-grow flex flex-col">
           <nav className="flex-1 px-2 pb-4 space-y-1">
             {navigation.map((item) => {
-              const isActive = location.pathname === item.href
+              const isActive = location.pathname === item.href;
               return (
                 <Link
                   key={item.name}
@@ -44,13 +47,13 @@ const Sidebar = () => {
                   />
                   {item.name}
                 </Link>
-              )
+              );
             })}
           </nav>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;

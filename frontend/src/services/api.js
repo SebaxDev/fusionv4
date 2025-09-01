@@ -1,9 +1,13 @@
 import axios from 'axios'
 
-// Configuración base de axios
+// CAMBIAR la baseURL según el entorno
+const baseURL = import.meta.env.MODE === 'development' 
+  ? 'http://localhost:8000' 
+  : '/api';
+
 const api = axios.create({
-  baseURL: '/api',
-  timeout: 10000,
+  baseURL: baseURL,
+  timeout: 30000,  // Aumentar timeout
   headers: {
     'Content-Type': 'application/json',
   },
