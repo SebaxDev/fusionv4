@@ -1,9 +1,7 @@
 import axios from 'axios'
 
-// CAMBIAR la baseURL según el entorno
-const baseURL = import.meta.env.MODE === 'development' 
-  ? 'http://localhost:8000' 
-  : '/api';
+// Use environment variables for the API base URL for flexibility in deployment.
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
   baseURL: baseURL,

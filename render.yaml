@@ -1,0 +1,56 @@
+# render.yaml
+# Blueprint for deploying the CRM application on Render.
+# This file defines both the frontend static site and the backend web service.
+
+services:
+  # -----------------
+  # Backend Web Service
+  # -----------------
+  - name: crm-backend
+    type: web
+    runtime: python
+    # The root directory for the backend service
+    rootDir: ./backend
+    # Command to install dependencies
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt"
+    # Command to start the application using Gunicorn for production
+    startCommand: "gunicorn -w 4 -k uvicorn.workers.UvicornWorker app:app --bind 0.0.0.0:$PORT"
+    # Plan type for the service (e.g., 'free', 'starter')
+    plan: free
+    # Environment variables required by the backend
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11 # Specify a recent Python version
+      - key: SECRET_KEY
+        generateValue: true # Let Render generate a secure secret key
+      - key: SHEET_ID
+        sync: false # User must provide this value in the Render dashboard
+      - key: GOOGLE_SHEETS_CREDENTIALS
+        sync: false # User must provide this JSON value in the Render dashboard
+
+  # -----------------
+  # Frontend Static Site
+  # -----------------
+  - name: crm-frontend
+    type: static
+    # The root directory for the frontend service
+    rootDir: ./frontend
+    # Command to install dependencies and build the static assets
+    buildCommand: "npm install && npm run build"
+    # The directory where the built static files are located
+    publishDir: dist
+    # Plan type for the service
+    plan: free
+    # Environment variable to connect the frontend to the backend
+    # This automatically uses the backend's public URL.
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: crm-backend
+          property: url
+    # Rewrite rule for single-page applications (SPAs) like React
+    routes:
+      - type: rewrite
+        source: "/*"
+        destination: "/index.html"
